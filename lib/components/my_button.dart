@@ -5,12 +5,14 @@ class MyButton extends StatefulWidget {
   final String title;
   final bool isSelected;
   final VoidCallback? function;
+  final Color color;
   const MyButton({
     super.key,
     required this.width,
     required this.title,
     required this.isSelected,
     this.function,
+    required this.color,
   });
 
   @override
@@ -26,15 +28,25 @@ class _MyButtonState extends State<MyButton> {
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF6e377e),
+          backgroundColor: widget.title == "✓"
+              ? Colors.green
+              : widget.isSelected
+              ? Colors.black
+              : widget.color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15), // circular corners
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
         child: Text(
-          "1",
+          widget.title,
           style: TextStyle(
-            color: Colors.black,
+            color: widget.title == "✓"
+                ? Colors.white
+                : widget.title == "X"
+                ? Colors.white
+                : widget.isSelected
+                ? Colors.white
+                : Colors.black,
             fontSize: widget.width * 0.1,
             fontWeight: FontWeight.bold,
           ),

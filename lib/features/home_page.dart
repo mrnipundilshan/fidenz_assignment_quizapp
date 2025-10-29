@@ -9,15 +9,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final List<Map<String, dynamic>> buttons = [
+    {'title': '1', 'color': Color(0xFF6e377e)},
+    {'title': '2', 'color': Color(0xFF6e377e)},
+    {'title': '3', 'color': Color(0xFF6e377e)},
+    {'title': '4', 'color': Color(0xFF6e377e)},
+    {'title': '5', 'color': Color(0xFF6e377e)},
+    {'title': '6', 'color': Color(0xFF6e377e)},
+    {'title': '7', 'color': Color(0xFF6e377e)},
+    {'title': '8', 'color': Color(0xFF6e377e)},
+    {'title': '9', 'color': Color(0xFF6e377e)},
+    {'title': 'X', 'color': Colors.redAccent},
+    {'title': '9', 'color': Color(0xFF6e377e)},
+    {'title': '✓', 'color': Color(0xFF6e377e)},
+  ];
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xFFb596b9),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [MyButton(width: width, title: '1', isSelected: true)],
+        child: GridView.builder(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(16),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+          ),
+          itemCount: buttons.length,
+          itemBuilder: (context, index) {
+            final item = buttons[index];
+            return MyButton(
+              width: width,
+              title: item['title'],
+              isSelected: false,
+              color: item['color'],
+            );
+          },
         ),
       ),
     );
