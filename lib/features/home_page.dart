@@ -53,7 +53,8 @@ class _HomePageState extends State<HomePage> {
               color: item['color'],
               function: () {
                 setState(() {
-                  selectedIndex = index; // <-- updates selected index
+                  selectedIndex = index; // updates selected index
+                  print(selectedIndex);
                 });
               },
             );
