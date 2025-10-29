@@ -9,6 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // key pad list
   final List<Map<String, dynamic>> buttons = [
     {'title': '1', 'color': Color(0xFF6e377e)},
     {'title': '2', 'color': Color(0xFF6e377e)},
@@ -23,6 +24,8 @@ class _HomePageState extends State<HomePage> {
     {'title': '9', 'color': Color(0xFF6e377e)},
     {'title': '✓', 'color': Color(0xFF6e377e)},
   ];
+
+  int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +44,18 @@ class _HomePageState extends State<HomePage> {
           itemCount: buttons.length,
           itemBuilder: (context, index) {
             final item = buttons[index];
+            final bool isSelected = selectedIndex == index;
+
             return MyButton(
               width: width,
               title: item['title'],
-              isSelected: false,
+              isSelected: isSelected,
               color: item['color'],
+              function: () {
+                setState(() {
+                  selectedIndex = index; // <-- updates selected index
+                });
+              },
             );
           },
         ),

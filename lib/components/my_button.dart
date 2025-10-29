@@ -26,9 +26,11 @@ class _MyButtonState extends State<MyButton> {
       width: widget.width * 0.2,
       height: widget.width * 0.2,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: widget.function,
         style: ElevatedButton.styleFrom(
-          backgroundColor: widget.title == "✓"
+          backgroundColor: widget.title == "X"
+              ? Colors.redAccent
+              : widget.title == "✓"
               ? Colors.green
               : widget.isSelected
               ? Colors.black
