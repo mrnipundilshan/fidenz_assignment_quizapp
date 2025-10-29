@@ -1,4 +1,5 @@
 import 'package:fidenz_assignment_quizapp/components/my_button.dart';
+import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -51,11 +52,11 @@ class _HomePageState extends State<HomePage> {
               title: item['title'],
               isSelected: isSelected,
               color: item['color'],
-              function: () {
+              function: () async {
                 setState(() {
                   selectedIndex = index; // updates selected index
-                  print(selectedIndex);
                 });
+                print(QuectionApiService().getQections());
               },
             );
           },
