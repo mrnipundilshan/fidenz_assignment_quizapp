@@ -16,6 +16,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Future<QuectionModel> question;
 
+  // Add this function in your _HomePageState
+  void resetGame() {
+    setState(() {
+      quizcount = 0;
+      score = 0;
+      skipCount = 0;
+      fails = 0;
+      selectedIndex = null;
+      selectedNumber = null;
+      solution = null;
+      skipStatus = true;
+
+      loadQuections();
+
+      // Restart timers
+      _timeTextController.restart();
+      _timerBarController.reset();
+      _timerBarController.start();
+    });
+  }
+
   // key pad list
   final List<Map<String, dynamic>> buttons = [
     {'title': '1', 'color': Color(0xFF6e377e)},
@@ -223,172 +244,202 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: width * 0.025),
-                child: Column(
-                  children: [
-                    // timer progress bar
-                    const SizedBox(height: 15),
-                    LinearTimer(
-                      forward: false,
-                      minHeight: 10,
-                      duration: const Duration(seconds: 20),
-                      controller: _timerBarController,
-                    ),
-
-                    // text count down
-                    const SizedBox(height: 6),
-                    Align(
-                      alignment: AlignmentGeometry.centerLeft,
-                      child: Countdown(
-                        seconds: 20,
-                        controller: _timeTextController,
-                        build: (BuildContext context, double time) => Text(
-                          '${time.toInt()} seconds remaining...',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: width * 0.04,
-                          ),
-                        ),
-                        interval: Duration(seconds: 1),
-                        onFinished: () {
-                          // Load new question
-                          setState(() {
-                            loadQuections();
-                            quizcount++;
-                            selectedIndex = null;
-                            selectedNumber = null;
-                            solution = null;
-                            if (skipStatus == true) {
-                              fails++;
-                              skipCount++;
-                            }
-                          });
-
-                          // Restart both text timer and linear bar
-                          _timeTextController.restart();
-                          _timerBarController.reset();
-                          _timerBarController.start();
-                        },
-                      ),
-                    ),
-
-                    // image view
-                    const SizedBox(height: 8),
-                    Container(
-                      width: width,
-                      height: width * 0.45,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.blueGrey, width: 2),
-                      ),
-
-                      child: FutureBuilder<QuectionModel>(
-                        future: question,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: SizedBox(
-                                width: width * 0.2,
-                                height: width * 0.2,
-                                child: const CircularProgressIndicator(
-                                  color: Color(0xFFb596b9),
+                child: fails > 2
+                    ? SizedBox(
+                        height: width,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Score: $score",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.09,
+                                  color: Color(0xFF6e377e),
                                 ),
                               ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Center(
-                              child: Text("Error: ${snapshot.error}"),
-                            );
-                          } else if (snapshot.hasData) {
-                            final question = snapshot.data;
-
-                            // store solution
-                            solution = question!.solution;
-                            print(solution);
-                            // display the question image
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image(
-                                image: NetworkImage(question.question),
-                                fit: BoxFit.fill,
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF6e377e),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  resetGame(); // reset everything
+                                },
+                                child: Text(
+                                  "start again",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: width * 0.05,
+                                  ),
+                                ),
                               ),
-                            );
-                          } else {
-                            return const Center(child: Text('No data found'));
-                          }
-                        },
-                      ),
-                    ),
-
-                    // num pad
-                    const SizedBox(height: 15),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 15,
-                            crossAxisSpacing: 50,
+                            ],
                           ),
-                      itemCount: buttons.length,
-                      itemBuilder: (context, index) {
-                        final item = buttons[index];
-                        final bool isSelected = selectedIndex == index;
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          // timer progress bar
+                          const SizedBox(height: 15),
+                          LinearTimer(
+                            forward: false,
+                            minHeight: 10,
+                            duration: const Duration(seconds: 20),
+                            controller: _timerBarController,
+                          ),
 
-                        return MyButton(
-                          width: width,
-                          title: item['title'],
-                          isSelected: isSelected,
-                          color: item['color'],
-                          function: () async {
-                            switch (item['title']) {
-                              case 'X':
+                          // text count down
+                          const SizedBox(height: 6),
+                          Align(
+                            alignment: AlignmentGeometry.centerLeft,
+                            child: Countdown(
+                              seconds: 20,
+                              controller: _timeTextController,
+                              build: (BuildContext context, double time) =>
+                                  Text(
+                                    '${time.toInt()} seconds remaining...',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: width * 0.04,
+                                    ),
+                                  ),
+                              interval: Duration(seconds: 1),
+                              onFinished: () {
+                                // Load new question
                                 setState(() {
-                                  deleteNumberFunction();
-                                });
-                                // your delete logic
-                                break;
-
-                              case '✓':
-                                doneFunction();
-                                setState(() {
+                                  loadQuections();
+                                  quizcount++;
                                   selectedIndex = null;
+                                  selectedNumber = null;
+                                  solution = null;
+                                  if (skipStatus == true) {
+                                    fails++;
+                                    skipCount++;
+                                  }
                                 });
-                                // your submit logic
-                                break;
 
-                              default:
-                                // all numbers (0–9)
-                                selectedNumberFunction(index, item['title']);
-                                break;
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     OutlinedButton(
-                    //       onPressed: () {
-                    //         _timerBarController.start();
-                    //       },
-                    //       child: const Text('Start'),
-                    //     ),
-                    //     const SizedBox(width: 12),
-                    //     OutlinedButton(
-                    //       onPressed: () {
-                    //         _timerBarController.reset();
-                    //       },
-                    //       child: const Text('Reset'),
-                    //     ),
-                    //   ],
-                    // ),
-                    const SizedBox(height: 24),
-                  ],
-                ),
+                                // Restart both text timer and linear bar
+                                _timeTextController.restart();
+                                _timerBarController.reset();
+                                _timerBarController.start();
+                              },
+                            ),
+                          ),
+
+                          // image view
+                          const SizedBox(height: 8),
+                          Container(
+                            width: width,
+                            height: width * 0.45,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.blueGrey,
+                                width: 2,
+                              ),
+                            ),
+
+                            child: FutureBuilder<QuectionModel>(
+                              future: question,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: SizedBox(
+                                      width: width * 0.2,
+                                      height: width * 0.2,
+                                      child: const CircularProgressIndicator(
+                                        color: Color(0xFFb596b9),
+                                      ),
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text("Error: ${snapshot.error}"),
+                                  );
+                                } else if (snapshot.hasData) {
+                                  final question = snapshot.data;
+
+                                  // store solution
+                                  solution = question!.solution;
+                                  print(solution);
+                                  // display the question image
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image(
+                                      image: NetworkImage(question.question),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: Text('No data found'),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+
+                          // num pad
+                          const SizedBox(height: 15),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 50,
+                                ),
+                            itemCount: buttons.length,
+                            itemBuilder: (context, index) {
+                              final item = buttons[index];
+                              final bool isSelected = selectedIndex == index;
+
+                              return MyButton(
+                                width: width,
+                                title: item['title'],
+                                isSelected: isSelected,
+                                color: item['color'],
+                                function: () async {
+                                  switch (item['title']) {
+                                    case 'X':
+                                      setState(() {
+                                        deleteNumberFunction();
+                                      });
+                                      // your delete logic
+                                      break;
+
+                                    case '✓':
+                                      doneFunction();
+                                      setState(() {
+                                        selectedIndex = null;
+                                      });
+                                      // your submit logic
+                                      break;
+
+                                    default:
+                                      // all numbers (0–9)
+                                      selectedNumberFunction(
+                                        index,
+                                        item['title'],
+                                      );
+                                      break;
+                                  }
+                                },
+                              );
+                            },
+                          ),
+
+                          const SizedBox(height: 24),
+                        ],
+                      ),
               ),
             ],
           ),
