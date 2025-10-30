@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:fidenz_assignment_quizapp/components/my_button.dart';
 import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dart';
+import 'package:fidenz_assignment_quizapp/data/repositories/quection_repository.dart';
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
+import 'package:fidenz_assignment_quizapp/data/services/local_storage_service.dart';
+import 'package:fidenz_assignment_quizapp/data/repositories/score_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:linear_timer/linear_timer.dart';
 import 'package:timer_count_down/timer_controller.dart';
@@ -17,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Future<QuectionModel> question;
+  late final QuectionRepository _quectionRepository;
 
   // Add this function in your _HomePageState
   void resetGame() {
@@ -79,12 +83,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int quizcount = 0;
   int score = 0;
   int skipCount = 0;
+  int highScore = 0;
 
   @override
   void initState() {
     super.initState();
 
     // load data at first load
+    _quectionRepository = QuectionRepository(QuectionApiService());
     loadQuections();
     _timerBarController = LinearTimerController(this);
 
@@ -106,7 +112,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   // load quection
   void loadQuections() {
-    question = QuectionApiService().getQections();
+    question = _quectionRepository.getQections();
   }
 
   // selected number function
@@ -230,16 +236,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             fontSize: width * 0.04,
                           ),
                         ),
+
                         SizedBox(height: 10),
                       ],
                     ),
-                    Row(
-                      children: List.generate(3, (index) {
-                        return Icon(
-                          Icons.favorite,
-                          color: index < fails ? Colors.white : Colors.pink,
-                        );
-                      }),
+                    Column(
+                      children: [
+                        Text(
+                          "High Score  : $highScore",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: width * 0.04,
+                          ),
+                        ),
+                        Row(
+                          children: List.generate(3, (index) {
+                            return Icon(
+                              Icons.favorite,
+                              color: index < fails ? Colors.white : Colors.pink,
+                            );
+                          }),
+                        ),
+                      ],
                     ),
                   ],
                 ),
