@@ -4,8 +4,6 @@ import 'package:fidenz_assignment_quizapp/components/my_button.dart';
 import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dart';
 import 'package:fidenz_assignment_quizapp/data/repositories/quection_repository.dart';
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
-import 'package:fidenz_assignment_quizapp/data/services/local_storage_service.dart';
-import 'package:fidenz_assignment_quizapp/data/repositories/score_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:linear_timer/linear_timer.dart';
 import 'package:timer_count_down/timer_controller.dart';
