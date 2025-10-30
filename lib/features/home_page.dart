@@ -335,6 +335,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                       )
+                    // game screen
                     : Column(
                         children: [
                           // timer progress bar
