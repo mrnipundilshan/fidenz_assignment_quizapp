@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fidenz_assignment_quizapp/components/my_button.dart';
 import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dart';
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
@@ -26,7 +28,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       selectedIndex = null;
       selectedNumber = null;
       solution = null;
-      skipStatus = true;
 
       loadQuections();
 
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  // key pad list
+  // key pad String list
   final List<Map<String, dynamic>> buttons = [
     {'title': '1', 'color': Color(0xFF6e377e)},
     {'title': '2', 'color': Color(0xFF6e377e)},
@@ -53,10 +54,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     {'title': '✓', 'color': Color(0xFF6e377e)},
   ];
 
-  // choice in num pad
+  // choosen selection index in numpad
   int? selectedIndex;
 
-  // selected index
+  // selected number
   int? selectedNumber;
 
   // solution
@@ -65,16 +66,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // fails count
   int fails = 0;
 
-  // check skip status
-  bool skipStatus = true;
-
-  // timer controller
+  // timer controllers
   late final LinearTimerController _timerBarController;
   final CountdownController _timeTextController = CountdownController(
     autoStart: true,
   );
 
-  // progress bar start indicator
+  // progress bar first start indicator
   bool _autoStarted = false;
 
   // game variable
@@ -85,9 +83,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    // load data at first load
     loadQuections();
     _timerBarController = LinearTimerController(this);
-    // Auto-start once, after first question loads (ensures a build occurred)
+
+    // Auto-start once, after first question loads
     question.then((_) {
       if (mounted && !_autoStarted) {
         _autoStarted = true;
@@ -120,7 +121,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // delete number logic
   void deleteNumberFunction() {
     setState(() {
-      selectedIndex = null; // updates selected index
+      selectedIndex = null; // remove selected index
     });
   }
 
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         _timerBarController.start();
       }
     } else {
-      print('No number selected');
+      log('No number selected');
     }
   }
 
@@ -161,6 +162,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      // app bar
       appBar: AppBar(
         backgroundColor: Color(0xFF6e377e),
         title: Text(
@@ -181,6 +183,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // score area
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xFF6e377e),
@@ -242,9 +245,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
 
+              // content
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: width * 0.025),
                 child: fails > 2
+                    // if loses 3 times -> game end
                     ? SizedBox(
                         height: width,
                         child: Center(
@@ -317,10 +322,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   selectedIndex = null;
                                   selectedNumber = null;
                                   solution = null;
-                                  if (skipStatus == true) {
-                                    fails++;
-                                    skipCount++;
-                                  }
+
+                                  fails++;
+                                  skipCount++;
                                 });
 
                                 // Restart both text timer and linear bar
@@ -368,7 +372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                   // store solution
                                   solution = question!.solution;
-                                  print(solution);
+                                  //print(solution);
                                   // display the question image
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
@@ -411,17 +415,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   switch (item['title']) {
                                     case 'X':
                                       setState(() {
+                                        // numpad clear function
                                         deleteNumberFunction();
                                       });
-                                      // your delete logic
+
                                       break;
 
                                     case '✓':
+                                      // done function
                                       doneFunction();
                                       setState(() {
                                         selectedIndex = null;
                                       });
-                                      // your submit logic
                                       break;
 
                                     default:
