@@ -3,6 +3,8 @@ import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dar
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
 import 'package:flutter/material.dart';
 import 'package:linear_timer/linear_timer.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,19 +36,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int? selectedIndex;
 
   // timer controller
-  late final LinearTimerController _timerController;
+  late final LinearTimerController _timerBarController;
+  final CountdownController _timeTextController = new CountdownController(
+    autoStart: true,
+  );
   bool _autoStarted = false;
 
   @override
   void initState() {
     super.initState();
     loadQuections();
-    _timerController = LinearTimerController(this);
+    _timerBarController = LinearTimerController(this);
     // Auto-start once, after first question loads (ensures a build occurred)
     question.then((_) {
       if (mounted && !_autoStarted) {
         _autoStarted = true;
-        _timerController.start();
+        _timerBarController.start();
       }
     });
   }
@@ -67,22 +72,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 24),
+              // time
               LinearTimer(
+                forward: false,
                 minHeight: 10,
                 duration: const Duration(seconds: 20),
-                controller: _timerController,
-                onTimerEnd: () {
-                  //print("timer ended");
-                  // Fetch new question
+                controller: _timerBarController,
+              ),
+
+              // text count down
+              const SizedBox(height: 8),
+              Countdown(
+                seconds: 20,
+                controller: _timeTextController,
+                build: (BuildContext context, double time) => Text(
+                  '${time.toInt()} seconds remaining...',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: width * 0.04,
+                  ),
+                ),
+                interval: Duration(seconds: 1),
+                onFinished: () {
+                  // Restart both text timer and linear bar
+                  _timeTextController.restart();
+                  _timerBarController.reset();
+                  _timerBarController.start();
+
+                  // Load new question
                   setState(() {
                     loadQuections();
                   });
-                  // Restart timer
-                  _timerController.reset();
-                  _timerController.start();
                 },
               ),
-              const SizedBox(height: 12),
 
               // image view
               Container(
@@ -134,8 +156,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
 
-              const SizedBox(height: 24),
               // num pad
+              const SizedBox(height: 15),
               GridView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(16),
@@ -167,14 +189,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      _timerController.start();
+                      _timerBarController.start();
                     },
                     child: const Text('Start'),
                   ),
                   const SizedBox(width: 12),
                   OutlinedButton(
                     onPressed: () {
-                      _timerController.reset();
+                      _timerBarController.reset();
                     },
                     child: const Text('Reset'),
                   ),
@@ -190,7 +212,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _timerController.dispose();
+    _timerBarController.dispose();
     super.dispose();
   }
 }
