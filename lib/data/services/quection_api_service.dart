@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,7 +19,7 @@ class QuectionApiService {
       final response = await _dio.get('');
 
       if (response.statusCode == 200) {
-        return QuectionModel.fromJson(response.data);
+        return QuectionModel.fromJson(json.decode(response.data));
       } else {
         throw Exception(
           "Failed to fetch quections, status: ${response.statusCode}",
