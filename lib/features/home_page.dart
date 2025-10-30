@@ -38,6 +38,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // selected index
   int? selectedNumber;
 
+  int? solution;
+
   // timer controller
   late final LinearTimerController _timerBarController;
   final CountdownController _timeTextController = CountdownController(
@@ -49,6 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   // game variable
   int quizcount = 0;
+  int score = 0;
 
   @override
   void initState() {
@@ -93,9 +96,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // done  function
-  void doneFunction(String numberValueString) {
+  void doneFunction() {
     if (selectedNumber != null) {
-      print('Selected Number: $selectedNumber');
+      if (selectedNumber == solution) {
+        setState(() {
+          score++;
+        });
+      }
     } else {
       print('No number selected');
     }
@@ -159,7 +166,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         Text(
-                          "Score.           : 2",
+                          "Score.           : $score",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -255,15 +262,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             );
                           } else if (snapshot.hasData) {
                             final question = snapshot.data;
+
+                            // store solution
+                            solution = question!.solution;
+                            print(solution);
+                            // display the question image
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-
                               child: Image(
-                                image: NetworkImage(question!.question),
+                                image: NetworkImage(question.question),
                                 fit: BoxFit.fill,
                               ),
                             );
-                            // display the question image
                           } else {
                             return const Center(child: Text('No data found'));
                           }
@@ -302,7 +312,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 break;
 
                               case '✓':
-                                doneFunction(item['title']);
+                                doneFunction();
                                 // your submit logic
                                 break;
 
