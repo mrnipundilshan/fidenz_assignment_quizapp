@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:fidenz_assignment_quizapp/components/my_button.dart';
+import 'package:fidenz_assignment_quizapp/data/repositories/score_repository.dart';
 import 'package:fidenz_assignment_quizapp/data/services/quection_api_service.dart';
 import 'package:fidenz_assignment_quizapp/data/repositories/quection_repository.dart';
 import 'package:fidenz_assignment_quizapp/models/quection_model.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Future<QuectionModel> question;
   late final QuectionRepository _quectionRepository;
+  final ScoreRepository _scoreRepository = ScoreRepository();
 
   // Add this function in your _HomePageState
   void resetGame() {
@@ -90,6 +92,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // load data at first load
     _quectionRepository = QuectionRepository(QuectionApiService());
     loadQuections();
+    loadHighScore();
     _timerBarController = LinearTimerController(this);
 
     // Auto-start once, after first question loads
@@ -100,6 +103,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
     });
   }
+
+  // load highscore
+  void loadHighScore() async {
+    final savedHighScore = await _scoreRepository.getHighScore();
+    setState(() {
+      highScore = savedHighScore;
+    });
+  }
+
+  // updatehighscore
 
   // dispose
   @override
