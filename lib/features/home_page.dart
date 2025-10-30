@@ -287,6 +287,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                       )
+                    : score == 10
+                    // if score 10 times -> game won & end
+                    ? SizedBox(
+                        height: width,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Congratulations \nYou Won !!!",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.08,
+                                  color: Color(0xFF6e377e),
+                                ),
+                              ),
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Score: $score",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.09,
+                                  color: Color(0xFF6e377e),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF6e377e),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  resetGame(); // reset everything
+                                },
+                                child: Text(
+                                  "start again",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: width * 0.05,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                     : Column(
                         children: [
                           // timer progress bar
@@ -372,7 +420,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                   // store solution
                                   solution = question!.solution;
-                                  //print(solution);
+                                  print(solution);
                                   // display the question image
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
