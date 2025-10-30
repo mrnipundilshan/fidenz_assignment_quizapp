@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       solution = null;
 
       loadQuections();
-
+      loadHighScore();
       // Restart timers
       _timeTextController.restart();
       _timerBarController.reset();
@@ -113,6 +113,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // updatehighscore
+  void updatehighscore(int newScore) async {
+    await _scoreRepository.saveHighScore(newScore);
+  }
 
   // dispose
   @override
@@ -151,6 +154,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           quizcount++;
           loadQuections();
         });
+
+        // call update high score if score>highscore
+        if (score > highScore) {
+          updatehighscore(score);
+        }
 
         // Restart both text timer and linear bar
         _timeTextController.restart();
