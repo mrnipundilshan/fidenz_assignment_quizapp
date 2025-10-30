@@ -129,6 +129,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     question = _quectionRepository.getQections();
   }
 
+  // format error messages (hide 'Exception: ' prefix)
+  String _formatError(Object? error) {
+    if (error == null) return 'Something went wrong. Please try again.';
+    final String text = error.toString();
+    const String prefix = 'Exception: ';
+    if (text.startsWith(prefix)) {
+      return text.substring(prefix.length);
+    }
+    return text;
+  }
+
   // selected number function
   void selectedNumberFunction(int index, String numberValue) {
     setState(() {
@@ -428,7 +439,55 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   );
                                 } else if (snapshot.hasError) {
                                   return Center(
-                                    child: Text("Error: ${snapshot.error}"),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.wifi_off,
+                                          size: 48,
+                                          color: Colors.blueGrey,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0,
+                                          ),
+                                          child: Text(
+                                            _formatError(snapshot.error),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: width * 0.04,
+                                              color: Colors.blueGrey,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFF6e377e,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              loadQuections();
+                                            });
+                                          },
+                                          child: const Text(
+                                            'Retry',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 } else if (snapshot.hasData) {
                                   final question = snapshot.data;
@@ -439,9 +498,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   // display the question image
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
-                                    child: Image(
-                                      image: NetworkImage(question.question),
+                                    child: Image.network(
+                                      question.question,
                                       fit: BoxFit.fill,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.broken_image_outlined,
+                                                    size: 48,
+                                                    color: Colors.blueGrey,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    'Failed to load image',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: width * 0.04,
+                                                      color: Colors.blueGrey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
                                     ),
                                   );
                                 } else {
