@@ -435,7 +435,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                                   // store solution
                                   solution = question!.solution;
-                                  print(solution);
+                                  //print(solution);
                                   // display the question image
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
