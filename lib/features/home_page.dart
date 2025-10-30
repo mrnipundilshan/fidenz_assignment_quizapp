@@ -154,7 +154,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           quizcount++;
           loadQuections();
         });
-
+        // call congratulations message for passing score 10 by 10
+        if (score % 10 == 0) {
+          congratulationsMessage();
+        }
         // call update high score if score>highscore
         if (score > highScore) {
           updatehighscore(score);
@@ -181,6 +184,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     } else {
       log('No number selected');
     }
+  }
+
+  // message for passing score 10 by 10
+  void congratulationsMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: Text(
+          "🎉 Congratulations!!!",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Color(0xFF6e377e),
+          ),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -294,54 +318,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                textAlign: TextAlign.center,
-                                "Score: $score",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width * 0.09,
-                                  color: Color(0xFF6e377e),
-                                ),
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF6e377e),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  resetGame(); // reset everything
-                                },
-                                child: Text(
-                                  "start again",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: width * 0.05,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : score == 10
-                    // if score 10 times -> game won & end
-                    ? SizedBox(
-                        height: width,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                textAlign: TextAlign.center,
-                                "Congratulations \nYou Won !!!",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width * 0.08,
-                                  color: Color(0xFF6e377e),
-                                ),
-                              ),
                               Text(
                                 textAlign: TextAlign.center,
                                 "Score: $score",
