@@ -8,4 +8,10 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_highScoreKey) ?? 0;
   }
+
+  // save high score
+  Future<void> saveHighScore(int score) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_highScoreKey, score);
+  }
 }
