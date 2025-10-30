@@ -38,7 +38,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // selected index
   int? selectedNumber;
 
+  // solution
   int? solution;
+
+  // fails count
+  int fails = 0;
+
+  // check skip status
+  bool skipStatus = true;
 
   // timer controller
   late final LinearTimerController _timerBarController;
@@ -52,6 +59,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // game variable
   int quizcount = 0;
   int score = 0;
+  int skipCount = 0;
 
   @override
   void initState() {
@@ -101,7 +109,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (selectedNumber == solution) {
         setState(() {
           score++;
+          quizcount++;
+          loadQuections();
         });
+
+        // Restart both text timer and linear bar
+        _timeTextController.restart();
+        _timerBarController.reset();
+        _timerBarController.start();
+      }
+      if (selectedNumber != solution) {
+        // Load new question
+        setState(() {
+          loadQuections();
+          quizcount++;
+          fails++;
+        });
+
+        // Restart both text timer and linear bar
+        _timeTextController.restart();
+        _timerBarController.reset();
+        _timerBarController.start();
       }
     } else {
       print('No number selected');
@@ -149,6 +177,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // quection no
                         Text(
                           "Question No : $quizcount",
                           style: TextStyle(
@@ -157,14 +186,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             fontSize: width * 0.04,
                           ),
                         ),
+
+                        // skip count
                         Text(
-                          "Skip Count   : 2",
+                          "Skip Count   : $skipCount",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                             fontSize: width * 0.04,
                           ),
                         ),
+
+                        // score
                         Text(
                           "Score.           : $score",
                           style: TextStyle(
@@ -176,13 +209,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         SizedBox(height: 10),
                       ],
                     ),
-                    Text(
-                      "Question No: 2",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: width * 0.04,
-                      ),
+                    Row(
+                      children: List.generate(3, (index) {
+                        return Icon(
+                          Icons.favorite,
+                          color: index < fails ? Colors.white : Colors.pink,
+                        );
+                      }),
                     ),
                   ],
                 ),
@@ -221,6 +254,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           setState(() {
                             loadQuections();
                             quizcount++;
+                            selectedIndex = null;
+                            selectedNumber = null;
+                            solution = null;
+                            if (skipStatus == true) {
+                              fails++;
+                              skipCount++;
+                            }
                           });
 
                           // Restart both text timer and linear bar
@@ -313,6 +353,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                               case '✓':
                                 doneFunction();
+                                setState(() {
+                                  selectedIndex = null;
+                                });
                                 // your submit logic
                                 break;
 
