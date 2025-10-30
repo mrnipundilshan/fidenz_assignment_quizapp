@@ -11,6 +11,20 @@ A lightweight, fast quiz game built with Flutter. Players are shown an image-bas
 - **High score** persisted via `shared_preferences`
 - **Robust error handling** for network issues and server responses
 
+### App Screenshots
+<table>
+  <!-- Row 1 -->
+  <tr>
+    <td><img src="./assets/1.png" width="200" alt="Screenshot 1"></td>
+    <td><img src="./assets/2.png" width="200" alt="Screenshot 2"></td>  
+  </tr>
+  <!-- Row 2 -->
+  <tr>
+    <td><img src="./assets/3.png" width="200" alt="Screenshot 6"></td>
+    <td><img src="./assets/4.png" width="200" alt="Screenshot 7"></td>
+  </tr>
+</table>
+
 ## Getting Started
 
 ### Prerequisites
