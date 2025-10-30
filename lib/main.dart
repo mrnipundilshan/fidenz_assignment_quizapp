@@ -7,7 +7,6 @@ void main() async {
 
   // load env variables
   await dotenv.load(fileName: ".env");
-  print("API_BASE_URL = ${dotenv.env['API_BASE_URL']}");
 
   runApp(const MainApp());
 }
