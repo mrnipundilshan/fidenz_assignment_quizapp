@@ -163,6 +163,3 @@ For development convenience, you can serve a static JSON via a local server and 
 - Flutter, Dart
 - `dio`, `flutter_dotenv`, `linear_timer`, `timer_count_down`, `shared_preferences`, `flutter_launcher_icons`
 
-## License
-
-This project is for assignment/demo purposes. Add a license here if needed.
