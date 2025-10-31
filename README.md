@@ -1,4 +1,4 @@
-## Fidenz Assignment – Quiz App
+<center>## Fidenz Assignment – Quiz App</center>center>
 
 A lightweight, fast quiz game built with Flutter. Players are shown an image-based question and must select the correct number (0–9) within 20 seconds. The app tracks score, fails (lives), skips on timeout, and persists the high score locally.
 
