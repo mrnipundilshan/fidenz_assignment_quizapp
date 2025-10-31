@@ -12,6 +12,7 @@ A lightweight, fast quiz game built with Flutter. Players are shown an image-bas
 - **Robust error handling** for network issues and server responses
 
 ### App Screenshots
+
 <table>
   <!-- Row 1 -->
   <tr>
@@ -162,4 +163,3 @@ For development convenience, you can serve a static JSON via a local server and 
 
 - Flutter, Dart
 - `dio`, `flutter_dotenv`, `linear_timer`, `timer_count_down`, `shared_preferences`, `flutter_launcher_icons`
-
