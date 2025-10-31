@@ -26,7 +26,7 @@ A lightweight, fast quiz game built with Flutter. Players are shown an image-bas
 
 ### Prerequisites
 
-- Flutter SDK (3.9+ recommended)
+- Flutter SDK (3.35+ recommended)
 - Dart SDK (comes with Flutter)
 - Xcode (for iOS) / Android Studio (for Android)
 
